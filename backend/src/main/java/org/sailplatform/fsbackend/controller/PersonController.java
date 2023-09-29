@@ -26,7 +26,7 @@ public class PersonController {
 	}
 
     @PostMapping("/add")
-	public Person add(Person toAdd) {
+	public Person add(@RequestBody Person toAdd) {
 		return personService.add(toAdd);
 	}
 
