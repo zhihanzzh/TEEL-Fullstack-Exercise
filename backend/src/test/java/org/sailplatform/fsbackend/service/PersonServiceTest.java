@@ -14,6 +14,9 @@ import org.mockito.Mock;
 import org.sailplatform.fsbackend.model.Person;
 import org.sailplatform.fsbackend.repository.PersonRepository;
 
+/**
+ * Unit tests for the PersonService class.
+ */
 @ExtendWith(MockitoExtension.class)
 public class PersonServiceTest {
 
@@ -23,6 +26,9 @@ public class PersonServiceTest {
 	@InjectMocks
 	private PersonService personService;
 
+	/**
+     * Test adding a new Person entity.
+     */
 	@Test
 	public void testAddPerson() {
 		Person person = new Person();
@@ -38,6 +44,9 @@ public class PersonServiceTest {
 		assertThat(savedPerson.getLastName()).isEqualTo("Zhang");
 	}
 
+	/**
+     * Test updating an existing Person entity.
+     */
 	@Test
 	public void testUpdatePerson() {
 		Person existingPerson = new Person();
@@ -58,7 +67,60 @@ public class PersonServiceTest {
 		assertThat(savedPerson.getFirstName()).isEqualTo("Anya");
 		assertThat(savedPerson.getLastName()).isEqualTo("John");
 	}
+	
+	/**
+	 * Test updating a Person entity with a null request body.
+	 */
+	@Test
+	public void testUpdatePersonWithNullRequestBody() {
+	    Long personId = 1L;
 
+	    assertThatThrownBy(() -> personService.update(null, personId))
+	            .isInstanceOf(IllegalArgumentException.class)
+	            .hasMessageContaining("The update request contains no data");
+
+	    verify(personRepository, never()).save(any());
+	}
+	
+	/**
+	 * Test updating a Person entity with an ID mismatch between request body and path.
+	 */
+	@Test
+	public void testUpdatePersonWithIdMismatch() {
+	    Long personId = 1L;
+	    Person updatedPersonData = new Person();
+	    updatedPersonData.setId(2L); 
+
+	    assertThatThrownBy(() -> personService.update(updatedPersonData, personId))
+	            .isInstanceOf(IllegalArgumentException.class)
+	            .hasMessageContaining("The ID in the request body does not match the ID in the path");
+
+	    verify(personRepository, never()).save(any());
+	}
+	
+	/**
+	 * Test updating a non-existent Person entity.
+	 */
+	@Test
+	public void testUpdateNonExistentPerson() {
+	    Long nonExistentPersonId = 3L;
+	    Person updatedPersonData = new Person();
+	    updatedPersonData.setFirstName("Updated");
+	    updatedPersonData.setLastName("Person");
+
+	    when(personRepository.existsById(nonExistentPersonId)).thenReturn(false);
+
+	    assertThatThrownBy(() -> personService.update(updatedPersonData, nonExistentPersonId))
+	            .isInstanceOf(IllegalArgumentException.class)
+	            .hasMessageContaining("The person with ID " + nonExistentPersonId + " doesn't exist in the system");
+
+	    // Verify that save method is not called.
+	    verify(personRepository, never()).save(any());
+	}
+
+	/**
+     * Test deleting an existing Person entity.
+     */
 	@Test
 	public void testDeletePerson() {
 		Long personIdToDelete = 1L;
@@ -71,6 +133,26 @@ public class PersonServiceTest {
 		verify(personRepository, times(1)).deleteById(personIdToDelete);
 	}
 	
+	/**
+	 * Test deleting a non-existent Person entity.
+	 */
+	@Test
+	public void testDeleteNonExistentPerson() {
+	    Long nonExistentPersonId = 3L;
+
+	    when(personRepository.existsById(nonExistentPersonId)).thenReturn(false);
+
+	    assertThatThrownBy(() -> personService.delete(nonExistentPersonId))
+	            .isInstanceOf(IllegalArgumentException.class)
+	            .hasMessageContaining("The person with ID " + nonExistentPersonId + " doesn't exist in the system");
+
+	    // Verify that deleteById method is not called.
+	    verify(personRepository, never()).deleteById(any());
+	}
+	
+	/**
+     * Test searching for Person entities by first name.
+     */
 	@Test
 	public void testSearchByFirstName() {
 	    String firstNameToSearch = "Zhihan";

@@ -7,12 +7,22 @@ import org.sailplatform.fsbackend.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class responsible for handling business logic related to Person
+ * entities.
+ */
 @Service
 public class PersonService {
 
 	@Autowired
 	PersonRepository personRepository;
 
+	/**
+	 * Add a new Person entity.
+	 *
+	 * @param toAdd The Person object to add.
+	 * @return The added Person object.
+	 */
 	public Person add(Person toAdd) {
 		// firstName/lastName doesn't exist, save as null.
 		// firstName/lastName : null, save as ""
@@ -20,6 +30,11 @@ public class PersonService {
 		return personRepository.save(toAdd);
 	}
 
+	/**
+	 * Retrieve a list of all Person entities.
+	 *
+	 * @return A list of Person entities.
+	 */
 	public List<Person> getAll() {
 		return personRepository.findAll();
 	}
@@ -43,11 +58,24 @@ public class PersonService {
 		}
 
 	}
-	
+
+	/**
+	 * Search for Person entities by their first name.
+	 *
+	 * @param firstName The first name to search for.
+	 * @return A list of matching Person entities.
+	 */
 	public List<Person> searchByFirstName(String firstName) {
 		return personRepository.findByFirstName(firstName);
 	}
 
+	/**
+	 * Delete a specific Person entity by their ID.
+	 *
+	 * @param id The ID of the person to be deleted.
+	 * @throws IllegalArgumentException if the person with the specified ID doesn't
+	 *                                  exist.
+	 */
 	public void delete(Long id) {
 		if (personRepository.existsById(id)) {
 			personRepository.deleteById(id);

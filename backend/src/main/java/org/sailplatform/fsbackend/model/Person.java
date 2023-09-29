@@ -10,12 +10,12 @@ import lombok.Data;
 @Entity
 @Data
 public class Person {
-    
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
-    
-    String firstName;
 
-    String lastName;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
+	String firstName;
+
+	String lastName;
 }
