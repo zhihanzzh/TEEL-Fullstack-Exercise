@@ -3,6 +3,9 @@ package org.sailplatform.fsbackend.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -67,4 +70,33 @@ public class PersonServiceTest {
 
 		verify(personRepository, times(1)).deleteById(personIdToDelete);
 	}
+	
+	@Test
+	public void testSearchByFirstName() {
+	    String firstNameToSearch = "Zhihan";
+	    List<Person> expectedResults = createMockPersonList(firstNameToSearch);
+	    
+	    when(personRepository.findByFirstName(firstNameToSearch)).thenReturn(expectedResults);
+
+	    List<Person> actualResults = personService.searchByFirstName(firstNameToSearch);
+
+	    assertThat(actualResults).isNotNull();
+	    assertThat(actualResults).hasSize(expectedResults.size());
+	    assertThat(actualResults.get(0).getFirstName()).isEqualTo("Zhihan");
+	    assertThat(actualResults.get(1).getLastName()).isEqualTo("Zhang");
+	    assertThat(actualResults.get(2).getFirstName()).isNotNull();
+
+	}
+	
+	private List<Person> createMockPersonList(String firstName) {
+        List<Person> persons = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            Person person = new Person();
+            person.setId((long) i);
+            person.setFirstName(firstName);
+            person.setLastName("Zhang");
+            persons.add(person);
+        }
+        return persons;
+    }
 }

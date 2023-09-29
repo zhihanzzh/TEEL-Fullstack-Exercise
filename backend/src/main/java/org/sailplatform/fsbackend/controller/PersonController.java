@@ -24,6 +24,11 @@ public class PersonController {
 	public List<Person> getAll() {
 		return personService.getAll();
 	}
+    
+    @GetMapping("/searchByFirstName/{firstName}")
+	public List<Person> searchByFirstNamve(@PathVariable String firstName) {
+		return personService.searchByFirstName(firstName);
+	}
 
     @PostMapping("/add")
 	public Person add(@RequestBody Person toAdd) {

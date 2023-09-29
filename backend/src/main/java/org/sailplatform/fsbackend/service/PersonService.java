@@ -14,9 +14,9 @@ public class PersonService {
 	PersonRepository personRepository;
 
 	public Person add(Person toAdd) {
-		// firstname/lastname doesn't exist, save as null.
+		// firstName/lastName doesn't exist, save as null.
 		// firstName/lastName : null, save as ""
-		// Id is auto generated
+		// Id is auto generated, the ID in the request body will be overwritten
 		return personRepository.save(toAdd);
 	}
 
@@ -42,6 +42,10 @@ public class PersonService {
 			throw new IllegalArgumentException("The person with ID " + id + " doesn't exist in the system");
 		}
 
+	}
+	
+	public List<Person> searchByFirstName(String firstName) {
+		return personRepository.findByFirstName(firstName);
 	}
 
 	public void delete(Long id) {
