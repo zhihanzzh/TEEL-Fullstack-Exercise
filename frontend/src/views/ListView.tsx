@@ -75,10 +75,10 @@ function ListView() {
           {people.map((person: Person) => {
             return (
               <PersonRow key={person.id}>
+                <button onClick={() => handleDelete(person.id!)}>Delete</button>
+                <button onClick={() => handleEdit(person.id!)}>Edit</button>
                 <PersonCell>{person.firstName}</PersonCell>
                 <PersonCell>{person.lastName}</PersonCell>
-                <button onClick={() => handleEdit(person.id!)}>Edit</button>
-                <button onClick={() => handleDelete(person.id!)}>Delete</button>
               </PersonRow>
             );
           })}
