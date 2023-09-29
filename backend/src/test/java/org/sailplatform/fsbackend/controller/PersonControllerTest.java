@@ -1,50 +1,4 @@
 package org.sailplatform.fsbackend.controller;
-//
-//import static org.hamcrest.Matchers.is;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.*;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-//
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.Mock;
-//import org.sailplatform.fsbackend.model.Person;
-//import org.sailplatform.fsbackend.service.PersonService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.context.junit.jupiter.SpringExtension;
-//import org.springframework.test.web.servlet.MockMvc;
-//
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//
-//@WebMvcTest(PersonController.class)
-////@ExtendWith(SpringExtension.class)
-//public class PersonControllerTest {
-//	
-//    @Autowired
-//    private MockMvc mockMvc;
-//
-//    @Mock
-//    private PersonService personService;
-//    
-//    @Test
-//    public void testAddPerson() throws Exception {
-//        Person person = new Person();
-//        person.setFirstName("Zhihan");
-//        person.setLastName("Zhang");
-//
-//        when(personService.add(any(Person.class))).thenReturn(person);
-//
-//        mockMvc.perform(post("/add")
-//            .contentType(MediaType.APPLICATION_JSON)
-//            .content(new ObjectMapper().writeValueAsString(person)))
-//            .andExpect(status().isOk())
-//            .andExpect(jsonPath("$.firstName", is("Zhihan")))
-//            .andExpect(jsonPath("$.lastName", is("Zhang")));
-//    }
-//}
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -53,9 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.sailplatform.fsbackend.controller.PersonController;
 import org.sailplatform.fsbackend.model.Person;
 import org.sailplatform.fsbackend.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
