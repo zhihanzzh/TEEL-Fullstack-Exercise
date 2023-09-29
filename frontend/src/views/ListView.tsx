@@ -64,11 +64,12 @@ function ListView() {
           type="text"
           value={searchTerm}
           onChange={handleChange}
-          placeholder="Search By First Name"
+          placeholder="firstName(Case Sensitive)"
         ></input>
 
         <button onClick={handleSearch}>Search By First Name</button>
       </div>
+      <hr />
       {loadingComplete && (
         <div data-testid="people-list">
           {people.map((person: Person) => {
