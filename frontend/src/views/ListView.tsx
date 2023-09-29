@@ -4,22 +4,45 @@ import { AxiosResponse } from "axios";
 import axios from "axios";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 function ListView() {
   const [people, setPeople] = useState<Person[]>([]);
   const [loadingComplete, setLoadingComplete] = useState<boolean>(false);
 
+  const history = useHistory();
+
+  const handleEdit = (id: number) => {
+    history.push(`/edit/${id}`);
+  };
+
+  const fetchPeople = async () => {
+    try {
+      const response: AxiosResponse<Person[]> = await axios(
+        "http://localhost:8080/all"
+      );
+      setPeople(response.data);
+      setLoadingComplete(true);
+    } catch (error) {
+      console.error("Error fetching people:", error);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await axios.delete(`http://localhost:8080/delete/${id}`);
+      if (response.status === 200) {
+        await fetchPeople();
+      } else {
+        console.error("Failed to delete person");
+      }
+    } catch (error) {
+      console.error("Error deleting person:", error);
+    }
+  };
+
   useEffect(() => {
-    axios("http://localhost:8080/all")
-      .then((response: AxiosResponse<Person[]>) => {
-        setPeople(response.data);
-      })
-      .catch((error) => {
-        alert(error);
-      })
-      .finally(() => {
-        setLoadingComplete(true);
-      });
+    fetchPeople();
   }, []);
 
   return (
@@ -32,6 +55,8 @@ function ListView() {
               <PersonRow key={person.id}>
                 <PersonCell>{person.firstName}</PersonCell>
                 <PersonCell>{person.lastName}</PersonCell>
+                <button onClick={() => handleEdit(person.id!)}>Edit</button>
+                <button onClick={() => handleDelete(person.id!)}>Delete</button>
               </PersonRow>
             );
           })}
