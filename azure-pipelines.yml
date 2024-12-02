@@ -4,16 +4,83 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
+  - main
+  - release
+  - test/*
+
+pr:
+  branches:
+    include:
+      - main
+      - release
 
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+stages:
+  - stage: DeployApplication
+    condition:  |
+      or(
+        and(
+          eq(variables['Build.Reason'], 'PullRequest'),
+          eq(variables['System.PullRequest.TargetBranch'], 'main')
+        ),
+        in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/release')
+      )
+    jobs:
+      - job: DeployStagingArtifacts
+        condition: |
+          and
+          (
+            eq(variables['Build.Reason'], 'IndividualCI'),
+            eq(variables['Build.SourceBranchName'], 'main')
+          )
+        steps:
+        - script: echo "DeployStagingArtifacts Stage is running"
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+      - job: DeployQAArtifacts
+        condition: |
+          and
+          (
+            eq(variables['Build.Reason'], 'PullRequest'),
+            eq(variables['System.PullRequest.TargetBranch'], 'main')
+          )
+        steps:
+        - script: echo "DeployQAArtifacts Stage is running"
+
+      - job: DeployProductionArtifacts
+        condition: |
+          and
+          (
+            eq(variables['Build.Reason'], 'IndividualCI'),
+            eq(variables['Build.SourceBranchName'], 'release')
+          )
+        steps:
+        - script: echo "DeployProductionArtifacts Stage is running"
+
+
+      - job: UploadArtifacts
+        dependsOn: [DeployQAArtifacts, DeployProductionArtifacts, DeployStagingArtifacts]
+        condition: |
+          or
+          (
+            in(dependencies.DeployQAArtifacts.result, 'Succeeded', 'SucceededWithIssues'),
+            in(dependencies.DeployProductionArtifacts.result, 'Succeeded', 'SucceededWithIssues'),
+            in(dependencies.DeployStagingArtifacts.result, 'Succeeded', 'SucceededWithIssues')
+          )
+        steps:
+        - script: echo "UploadArtifacts Stage is running"
+
+  - stage: E2ETest
+    displayName: 'E2E Test'
+    condition: |
+      and(
+        eq(variables['Build.Reason'], 'PullRequest'),
+        eq(variables['System.PullRequest.SourceBranch'], 'main'),
+        eq(variables['System.PullRequest.TargetBranch'], 'release')
+      )
+    jobs:
+      - job: CypressE2ETest
+        displayName: 'Cypress E2E Test'
+        steps:
+          - script: echo "E2ETest Stage is running"
