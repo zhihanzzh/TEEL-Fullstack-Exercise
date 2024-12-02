@@ -70,6 +70,11 @@ stages:
           )
         steps:
         - script: echo "UploadArtifacts Stage is running"
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: 'pipelinetest_yaml'
+            publishLocation: 'Container'
 
   - stage: E2ETest
     displayName: 'E2E Test'
