@@ -58,7 +58,6 @@ stages:
         steps:
         - script: echo "DeployProductionArtifacts Stage is running"
 
-
       - job: UploadArtifacts
         dependsOn: [DeployQAArtifacts, DeployProductionArtifacts, DeployStagingArtifacts]
         condition: |

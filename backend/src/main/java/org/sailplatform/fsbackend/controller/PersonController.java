@@ -43,6 +43,7 @@ public class PersonController {
 	 */
 	@GetMapping("/searchByFirstName/{firstName}")
 	public List<Person> searchByFirstName(@PathVariable String firstName) {
+		System.out.println("test");
 		return personService.searchByFirstName(firstName);
 	}
 
