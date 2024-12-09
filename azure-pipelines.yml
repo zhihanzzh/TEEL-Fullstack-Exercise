@@ -91,25 +91,20 @@ stages:
             
             
   - stage: UnitTest
-    displayName: 'E2E Test'
-    condition: |
-      and(
-        eq(variables['Build.Reason'], 'PullRequest'),
-        eq(variables['System.PullRequest.SourceBranch'], 'test/unit-test'),
-        eq(variables['System.PullRequest.TargetBranch'], 'main')
-      )
+    displayName: 'unit Test'
+    condition: and(ne(variables['Build.Reason'], 'PullRequest'), notIn(variables['Build.SourceBranch'], 'refs/heads/release', 'refs/heads/main'))
     jobs:
-      - job: CypressE2ETest
-        displayName: 'Cypress E2E Test'
+      - job: runUnitTest
+        displayName: 'unit Test'
         steps:
-          # Step 1: Checkout Code
-          - task: Checkout@1
-
-          # Step 2: Setup JDK
-          - task: UseJavaVersion@1
-            inputs:
-              version: '11'  # Specify your required Java version, e.g., '11' or '17'
-              architecture: 'x64'
+#          # Step 1: Checkout Code
+#          - task: Checkout@1
+#
+#          # Step 2: Setup JDK
+#          - task: UseJavaVersion@1
+#            inputs:
+#              version: '11'  # Specify your required Java version, e.g., '11' or '17'
+#              architecture: 'x64'
 
           # Step 3: Navigate to Backend and Run Tests
           - script: |
@@ -125,7 +120,7 @@ stages:
             displayName: 'Publish Unit Test Results'
 
           # Step 5: Publish JaCoCo Code Coverage Report
-          - task: PublishCodeCoverageResults@1
+          - task: PublishCodeCoverageResults@2
             inputs:
               codeCoverageTool: 'JaCoCo'
               summaryFileLocation: 'backend/target/site/jacoco/jacoco.xml'
