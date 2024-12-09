@@ -91,7 +91,7 @@ stages:
             
             
   - stage: UnitTest
-    displayName: 'E2E Test'
+    displayName: 'unit Test'
     condition: |
       and(
         eq(variables['Build.Reason'], 'PullRequest'),
@@ -99,8 +99,8 @@ stages:
         eq(variables['System.PullRequest.TargetBranch'], 'main')
       )
     jobs:
-      - job: CypressE2ETest
-        displayName: 'Cypress E2E Test'
+      - job: runUnitTest
+        displayName: 'unit Test'
         steps:
           # Step 1: Checkout Code
           - task: Checkout@1
