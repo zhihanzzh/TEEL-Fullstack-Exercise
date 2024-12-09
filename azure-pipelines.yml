@@ -92,12 +92,7 @@ stages:
             
   - stage: UnitTest
     displayName: 'unit Test'
-    condition: |
-      and(
-        eq(variables['Build.Reason'], 'PullRequest'),
-        eq(variables['System.PullRequest.SourceBranch'], 'test/unit-test'),
-        eq(variables['System.PullRequest.TargetBranch'], 'main')
-      )
+    condition: and(ne(variables['Build.Reason'], 'PullRequest'), notIn(variables['Build.SourceBranch'], 'refs/heads/release', 'refs/heads/main'))
     jobs:
       - job: runUnitTest
         displayName: 'unit Test'
@@ -125,7 +120,7 @@ stages:
             displayName: 'Publish Unit Test Results'
 
           # Step 5: Publish JaCoCo Code Coverage Report
-          - task: PublishCodeCoverageResults@1
+          - task: PublishCodeCoverageResults@2
             inputs:
               codeCoverageTool: 'JaCoCo'
               summaryFileLocation: 'backend/target/site/jacoco/jacoco.xml'
