@@ -102,14 +102,14 @@ stages:
       - job: runUnitTest
         displayName: 'unit Test'
         steps:
-          # Step 1: Checkout Code
-          - task: Checkout@1
-
-          # Step 2: Setup JDK
-          - task: UseJavaVersion@1
-            inputs:
-              version: '11'  # Specify your required Java version, e.g., '11' or '17'
-              architecture: 'x64'
+#          # Step 1: Checkout Code
+#          - task: Checkout@1
+#
+#          # Step 2: Setup JDK
+#          - task: UseJavaVersion@1
+#            inputs:
+#              version: '11'  # Specify your required Java version, e.g., '11' or '17'
+#              architecture: 'x64'
 
           # Step 3: Navigate to Backend and Run Tests
           - script: |
