@@ -88,3 +88,46 @@ stages:
         displayName: 'Cypress E2E Test'
         steps:
           - script: echo "E2ETest Stage is running"
+            
+            
+  - stage: UnitTest
+    displayName: 'E2E Test'
+    condition: |
+      and(
+        eq(variables['Build.Reason'], 'PullRequest'),
+        eq(variables['System.PullRequest.SourceBranch'], 'test/unit-test'),
+        eq(variables['System.PullRequest.TargetBranch'], 'main')
+      )
+    jobs:
+      - job: CypressE2ETest
+        displayName: 'Cypress E2E Test'
+        steps:
+          # Step 1: Checkout Code
+          - task: Checkout@1
+
+          # Step 2: Setup JDK
+          - task: UseJavaVersion@1
+            inputs:
+              version: '11'  # Specify your required Java version, e.g., '11' or '17'
+              architecture: 'x64'
+
+          # Step 3: Navigate to Backend and Run Tests
+          - script: |
+              cd backend
+              mvn clean test
+            displayName: 'Run Unit Tests and Generate JaCoCo Coverage Report'
+
+          # Step 4: Publish Unit Test Results
+          - task: PublishTestResults@2
+            inputs:
+              testResultsFiles: 'backend/target/surefire-reports/*.xml'
+              failTaskOnFailedTests: true
+            displayName: 'Publish Unit Test Results'
+
+          # Step 5: Publish JaCoCo Code Coverage Report
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: 'JaCoCo'
+              summaryFileLocation: 'backend/target/site/jacoco/jacoco.xml'
+              reportDirectory: 'backend/target/site/jacoco'
+            displayName: 'Publish Code Coverage Results'
